@@ -16,19 +16,22 @@ int main(){
     memset(&(addserv.sin_zero),'0',8);
 	int ds = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
 	if(connect(ds,(struct sockaddr*) &addserv,sizeof(struct sockaddr))!=-1){
-			while(1){
-                             if(fork() ==0){
-                 while(recv(ds,reps,1024,0)>0){
-				    printf("%s\n",reps);		
-			    }
-                reps = calloc(1024,sizeof(char));
+            if(fork() ==0){
+            	while(1){
+	                while(recv(ds,reps,1024,0)>0){
+					    printf("%s\n",reps);		
+				    }
+	                reps = calloc(1024,sizeof(char));
+            	}
+            	exit(-1);
+			}else{
+				while(1){
+					gets(reqt);
+            		send(ds,reqt,1024,0);     
+            		reps = calloc(1024,sizeof(char));
+				}
 			}
-            gets(reqt);
-            send(ds,reqt,1024,0);     
-            	reps = calloc(1024,sizeof(char));
-
-            }
 	}else printf("didn't connect\n");
 	close(ds);
-    	return 0;
+    return 0;
 }
